@@ -3,742 +3,444 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>KISS OF LIFE SONG SORT</title>
 
 <style>
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    padding: 20px 10px 40px;
-    background: #fff;
-    color: #111;
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Pretendard",
-        "Apple SD Gothic Neo",
-        "Noto Sans KR",
-        sans-serif;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #fff;
+  color: #111;
+  text-align: center;
 }
 
-#mainTable {
-    width: min(500px, 100%);
-    margin: 0 auto;
-    border-collapse: separate;
-    border-spacing: 8px;
-    table-layout: fixed;
+.container {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 30px 16px;
 }
 
-#battleNumber {
-    height: 60px;
-    font-size: 13px;
-    color: #777;
-    text-align: center;
-    line-height: 1.6;
+h1 {
+  font-size: 28px;
+  margin: 20px 0 10px;
 }
 
-.songField {
-    width: 50%;
-    height: 180px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 15px;
-    background: #fff;
-    text-align: center;
-    vertical-align: middle;
-    cursor: pointer;
-    transition: .15s;
-    word-break: keep-all;
+.subtitle {
+  color: #777;
+  margin-bottom: 35px;
 }
 
-.songField:active {
-    background: #111;
-    color: #fff;
-    transform: scale(.97);
+#sortArea {
+  display: none;
 }
 
-.songName {
+.progress {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #777;
+}
+
+.choices {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.song {
+  width: 50%;
+  min-height: 180px;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.song:hover {
+  background: #f5f5f5;
+  transform: translateY(-2px);
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.buttons button,
+.start button,
+.restart {
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 10px;
+  padding: 12px 18px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.buttons button:hover,
+.start button:hover,
+.restart:hover {
+  background: #f3f3f3;
+}
+
+.start button {
+  font-size: 17px;
+  padding: 14px 30px;
+}
+
+#result {
+  display: none;
+}
+
+.result-list {
+  text-align: left;
+  margin-top: 30px;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 14px 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.rank {
+  width: 35px;
+  font-weight: bold;
+  color: #888;
+}
+
+.song-name {
+  font-size: 16px;
+}
+
+.first {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+@media (max-width: 500px) {
+  .song {
+    min-height: 150px;
     font-size: 17px;
-    font-weight: 700;
-    line-height: 1.5;
-}
+  }
 
-.selectText {
-    display: block;
-    margin-top: 12px;
-    font-size: 10px;
-    color: #aaa;
-    font-weight: 400;
-}
-
-#resultField {
-    width: min(500px, 100%);
-    margin: 25px auto 0;
-    text-align: center;
-}
-
-.resultTitle {
-    font-size: 25px;
-    font-weight: 800;
-    margin-bottom: 6px;
-}
-
-.resultSub {
-    color: #999;
-    font-size: 12px;
-    margin-bottom: 20px;
-}
-
-.resultTable {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-}
-
-.resultTable th {
-    background: #111;
-    color: #fff;
-    padding: 10px 6px;
-    font-weight: 700;
-}
-
-.resultTable td {
-    border: 1px solid #e5e5e5;
-    padding: 11px 7px;
-    text-align: left;
-}
-
-.resultTable td:first-child {
-    width: 55px;
-    text-align: center;
-    font-weight: 800;
-}
-
-.resultTable tr:nth-child(-n+4) td:first-child {
-    color: #111;
-}
-
-.restartButton {
-    margin-top: 20px;
-    padding: 12px 25px;
-    border: 0;
-    border-radius: 999px;
-    background: #111;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-@media (max-width: 430px) {
-
-    body {
-        padding: 15px 8px 35px;
-    }
-
-    #mainTable {
-        border-spacing: 5px;
-    }
-
-    .songField {
-        height: 170px;
-        padding: 10px;
-        border-radius: 13px;
-    }
-
-    .songName {
-        font-size: 15px;
-    }
+  h1 {
+    font-size: 24px;
+  }
 }
 </style>
-
-
-<script>
-
-/* =========================================================
-   KISS OF LIFE SONG LIST
-   중복 BREAK IT 하나 제거
-========================================================= */
-
-var namMember = new Array(
-
-    "쉿 (Shhh)",
-    "안녕, 네버랜드",
-    "sugarcoat",
-    "countdown",
-    "Kitty cat",
-    "Play Love Games",
-    "Bad News",
-    "Nobody Knows",
-    "My 808",
-    "TTG",
-    "Gentleman",
-    "Says it",
-    "Bad News (ENG Ver.)",
-    "Midas Touch",
-    "Nothing",
-    "Sticky",
-    "Te Quiero",
-    "Get Loud",
-    "Chemistry",
-    "Igloo",
-    "Too Many Alex",
-    "Back To Me",
-    "No One But Us",
-    "R.E.M",
-    "Live, Love, Laugh",
-    "W.House",
-    "Lips Hips Kiss",
-    "Tell Me",
-    "k bye",
-    "Painting",
-    "Slide",
-    "Heart of Gold",
-    "Think Twice",
-    "Lucky (Korean Ver.)",
-    "Lucky",
-    "Sticky (Japanese Ver.)",
-    "Midas Touch (Japanese Ver.)",
-    "Shhh (Japanese Ver.)",
-    "Nobody knows (Japanese Ver.)",
-    "Nobody Knows (Remix)",
-    "R.E.M (Remix)",
-    "Who is she",
-    "Don't mind me",
-    "SWEAT",
-    "WHAT!",
-    "BREAK IT",
-    "SWEAT (Japanese Ver.)",
-    "Was It You",
-    "Who is she (Japanese Ver.)",
-    "Igloo (Remix)",
-    "BREAK IT (English Ver.)"
-
-);
-
-
-/* =========================================================
-   SORTER VARIABLES
-========================================================= */
-
-var lstMember = new Array();
-var parent = new Array();
-var equal = new Array();
-var rec = new Array();
-
-var cmp1, cmp2;
-var head1, head2;
-var nrec;
-
-var numQuestion;
-var totalSize;
-var finishSize;
-var finishFlag;
-
-
-/* =========================================================
-   초기화
-========================================================= */
-
-function initList() {
-
-    var n = 0;
-    var mid;
-    var i;
-
-    lstMember[n] = new Array();
-
-    for (i = 0; i < namMember.length; i++) {
-        lstMember[n][i] = i;
-    }
-
-    parent[n] = -1;
-    totalSize = 0;
-    n++;
-
-    /*
-        배열을 계속 반으로 나눔
-    */
-
-    for (i = 0; i < lstMember.length; i++) {
-
-        if (lstMember[i].length >= 2) {
-
-            mid = Math.ceil(lstMember[i].length / 2);
-
-            lstMember[n] =
-                lstMember[i].slice(0, mid);
-
-            totalSize += lstMember[n].length;
-            parent[n] = i;
-            n++;
-
-            lstMember[n] =
-                lstMember[i].slice(
-                    mid,
-                    lstMember[i].length
-                );
-
-            totalSize += lstMember[n].length;
-            parent[n] = i;
-            n++;
-        }
-    }
-
-
-    /*
-        결과 저장용 배열
-    */
-
-    for (i = 0; i < namMember.length; i++) {
-        rec[i] = 0;
-    }
-
-    nrec = 0;
-
-
-    /*
-        동률 저장
-    */
-
-    for (i = 0; i <= namMember.length; i++) {
-        equal[i] = -1;
-    }
-
-
-    cmp1 = lstMember.length - 2;
-    cmp2 = lstMember.length - 1;
-
-    head1 = 0;
-    head2 = 0;
-
-    numQuestion = 1;
-    finishSize = 0;
-    finishFlag = 0;
-}
-
-
-/* =========================================================
-   선택
-   -1 = 왼쪽
-    1 = 오른쪽
-
-   동률 기능은 사용하지 않음
-========================================================= */
-
-function sortList(flag) {
-
-    var i;
-    var str;
-
-
-    /*
-        왼쪽 선택
-    */
-
-    if (flag < 0) {
-
-        rec[nrec] =
-            lstMember[cmp1][head1];
-
-        head1++;
-        nrec++;
-        finishSize++;
-
-        while (
-            equal[rec[nrec - 1]] != -1
-        ) {
-
-            rec[nrec] =
-                lstMember[cmp1][head1];
-
-            head1++;
-            nrec++;
-            finishSize++;
-        }
-    }
-
-
-    /*
-        오른쪽 선택
-    */
-
-    else if (flag > 0) {
-
-        rec[nrec] =
-            lstMember[cmp2][head2];
-
-        head2++;
-        nrec++;
-        finishSize++;
-
-        while (
-            equal[rec[nrec - 1]] != -1
-        ) {
-
-            rec[nrec] =
-                lstMember[cmp2][head2];
-
-            head2++;
-            nrec++;
-            finishSize++;
-        }
-    }
-
-
-    /*
-        한쪽 배열을 모두 사용했는지 확인
-    */
-
-    if (
-        head1 < lstMember[cmp1].length &&
-        head2 == lstMember[cmp2].length
-    ) {
-
-        while (
-            head1 < lstMember[cmp1].length
-        ) {
-
-            rec[nrec] =
-                lstMember[cmp1][head1];
-
-            head1++;
-            nrec++;
-            finishSize++;
-        }
-    }
-
-
-    else if (
-        head1 == lstMember[cmp1].length &&
-        head2 < lstMember[cmp2].length
-    ) {
-
-        while (
-            head2 < lstMember[cmp2].length
-        ) {
-
-            rec[nrec] =
-                lstMember[cmp2][head2];
-
-            head2++;
-            nrec++;
-            finishSize++;
-        }
-    }
-
-
-    /*
-        두 배열 모두 끝남
-    */
-
-    if (
-        head1 == lstMember[cmp1].length &&
-        head2 == lstMember[cmp2].length
-    ) {
-
-        for (
-            i = 0;
-            i <
-            lstMember[cmp1].length +
-            lstMember[cmp2].length;
-            i++
-        ) {
-
-            lstMember[parent[cmp1]][i] =
-                rec[i];
-        }
-
-
-        /*
-            사용한 배열 제거
-        */
-
-        lstMember.pop();
-        lstMember.pop();
-
-
-        cmp1 -= 2;
-        cmp2 -= 2;
-
-        head1 = 0;
-        head2 = 0;
-
-
-        /*
-            다음 비교 준비
-        */
-
-        for (
-            i = 0;
-            i < namMember.length;
-            i++
-        ) {
-
-            rec[i] = 0;
-        }
-
-        nrec = 0;
-    }
-
-
-    /*
-        종료
-    */
-
-    if (cmp1 < 0) {
-
-        str =
-            "정렬 완료!<br>" +
-            "총 " +
-            (numQuestion - 1) +
-            "번 비교했습니다.";
-
-        document.getElementById(
-            "battleNumber"
-        ).innerHTML = str;
-
-        showResult();
-
-        finishFlag = 1;
-
-    }
-
-    else {
-
-        showImage();
-    }
-}
-
-
-/* =========================================================
-   결과
-========================================================= */
-
-function showResult() {
-
-    var ranking = 1;
-    var sameRank = 1;
-    var str = "";
-    var i;
-
-
-    str +=
-        '<div class="resultTitle">RESULT</div>';
-
-    str +=
-        '<div class="resultSub">' +
-        'KISS OF LIFE SONG RANKING' +
-        '</div>';
-
-
-    str +=
-        '<table class="resultTable">';
-
-    str +=
-        '<tr>' +
-        '<th>순위</th>' +
-        '<th>노래</th>' +
-        '</tr>';
-
-
-    for (
-        i = 0;
-        i < namMember.length;
-        i++
-    ) {
-
-        str +=
-            "<tr>" +
-            "<td>" +
-            ranking +
-            "</td>" +
-            "<td>" +
-            namMember[lstMember[0][i]] +
-            "</td>" +
-            "</tr>";
-
-
-        /*
-            동률 순위 처리
-        */
-
-        if (
-            i < namMember.length - 1
-        ) {
-
-            if (
-                equal[
-                    lstMember[0][i]
-                ] ==
-                lstMember[0][i + 1]
-            ) {
-
-                sameRank++;
-
-            }
-
-            else {
-
-                ranking += sameRank;
-                sameRank = 1;
-
-            }
-        }
-    }
-
-
-    str += "</table>";
-
-
-    str +=
-        '<button class="restartButton" ' +
-        'onclick="location.reload()">' +
-        '다시 하기' +
-        '</button>';
-
-
-    document.getElementById(
-        "resultField"
-    ).innerHTML = str;
-}
-
-
-/* =========================================================
-   비교할 두 곡 표시
-========================================================= */
-
-function showImage() {
-
-    var str0 =
-        "Battle No." +
-        numQuestion +
-        "<br>" +
-        Math.floor(
-            finishSize * 100 / totalSize
-        ) +
-        "% sorted.";
-
-
-    var str1 =
-        toNameFace(
-            lstMember[cmp1][head1]
-        );
-
-
-    var str2 =
-        toNameFace(
-            lstMember[cmp2][head2]
-        );
-
-
-    document.getElementById(
-        "battleNumber"
-    ).innerHTML = str0;
-
-
-    document.getElementById(
-        "leftField"
-    ).innerHTML =
-        '<span class="songName">' +
-        str1 +
-        '</span>' +
-        '<span class="selectText">' +
-        '선택' +
-        '</span>';
-
-
-    document.getElementById(
-        "rightField"
-    ).innerHTML =
-        '<span class="songName">' +
-        str2 +
-        '</span>' +
-        '<span class="selectText">' +
-        '선택' +
-        '</span>';
-
-
-    numQuestion++;
-}
-
-
-/* =========================================================
-   곡 이름 가져오기
-========================================================= */
-
-function toNameFace(n) {
-
-    return namMember[n];
-}
-
-</script>
-
 </head>
-
 
 <body>
 
+<div class="container">
 
-<table id="mainTable">
+  <!-- 시작 화면 -->
+  <div id="start" class="start">
+    <h1>KISS OF LIFE<br>SONG SORT</h1>
+    <p class="subtitle">좋아하는 곡을 골라주세요</p>
+    <button onclick="startSort()">START</button>
+  </div>
 
-    <tr>
+  <!-- 정렬 화면 -->
+  <div id="sortArea">
 
-        <td
-            id="battleNumber"
-            colspan="2"
-        >
-            불러오는 중...
-        </td>
+    <div class="progress">
+      <span id="progress">1</span>번째 비교
+    </div>
 
-    </tr>
+    <div class="choices">
+      <div class="song" id="leftSong" onclick="choose(0)"></div>
+      <div class="song" id="rightSong" onclick="choose(1)"></div>
+    </div>
 
+    <div class="buttons">
+      <button onclick="choose(2)">둘 다 좋다</button>
+      <button onclick="choose(3)">모르겠다</button>
+    </div>
 
-    <tr>
+  </div>
 
-        <td
-            id="leftField"
-            class="songField"
-            onclick="
-                if (finishFlag == 0)
-                    sortList(-1);
-            "
-        >
-        </td>
+  <!-- 결과 -->
+  <div id="result">
+    <h1>RESULT</h1>
+    <p class="subtitle">KISS OF LIFE SONG RANKING</p>
 
+    <div id="resultList" class="result-list"></div>
 
-        <td
-            id="rightField"
-            class="songField"
-            onclick="
-                if (finishFlag == 0)
-                    sortList(1);
-            "
-        >
-        </td>
+    <button class="restart" onclick="location.reload()">
+      다시 하기
+    </button>
+  </div>
 
-    </tr>
-
-</table>
-
-
-<div
-    id="resultField"
->
 </div>
-
 
 <script>
 
-initList();
-showImage();
+const songs = [
+  "쉿 (Shhh)",
+  "안녕, 네버랜드",
+  "sugarcoat",
+  "countdown",
+  "Kitty cat",
+  "Play Love Games",
+  "Bad News",
+  "Nobody Knows",
+  "My 808",
+  "TTG",
+  "Gentleman",
+  "Says it",
+  "Bad News (ENG Ver.)",
+  "Midas Touch",
+  "Nothing",
+  "Sticky",
+  "Te Quiero",
+  "Get Loud",
+  "Chemistry",
+  "Igloo",
+  "Too Many Alex",
+  "Back To Me",
+  "No One But Us",
+  "R.E.M",
+  "Live, Love, Laugh",
+  "W.House",
+  "Lips Hips Kiss",
+  "Tell Me",
+  "k bye",
+  "Painting",
+  "Slide",
+  "Heart of Gold",
+  "Think Twice",
+  "Lucky",
+  "Who is she",
+  "Don't mind me",
+  "SWEAT",
+  "WHAT!",
+  "BREAK IT",
+  "Was It You"
+];
+
+let items = [];
+let currentPair = [];
+let comparisons = 0;
+
+/*
+  Merge Sort 방식
+  ----------------
+  두 곡을 비교하고,
+  선택된 쪽을 앞에 넣는다.
+
+  "둘 다 좋다" → 두 곡을 같은 그룹으로 처리
+  "모르겠다" → 랜덤하게 처리
+*/
+
+function startSort() {
+
+  document.getElementById("start").style.display = "none";
+  document.getElementById("sortArea").style.display = "block";
+
+  items = songs.map((song, index) => ({
+    name: song,
+    index: index
+  }));
+
+  mergeSortStart();
+}
+
+function mergeSortStart() {
+
+  // 정렬용 배열을 복사
+  let shuffled = [...items];
+
+  // 랜덤 셔플
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  items = shuffled;
+
+  // 실제 정렬 시작
+  sortGroups([items]);
+}
+
+let groups = [];
+let nextGroups = [];
+
+function sortGroups(initial) {
+
+  groups = [];
+
+  // 각 곡을 하나의 그룹으로 만든다
+  for (const song of items) {
+    groups.push([song]);
+  }
+
+  nextGroups = [];
+  mergeRound();
+}
+
+function mergeRound() {
+
+  if (groups.length <= 1) {
+    showResult(groups[0]);
+    return;
+  }
+
+  nextGroups = [];
+  let i = 0;
+
+  function processNext() {
+
+    if (i >= groups.length) {
+      groups = nextGroups;
+      mergeRound();
+      return;
+    }
+
+    const left = groups[i];
+    const right = groups[i + 1];
+
+    if (!right) {
+      nextGroups.push(left);
+      i += 2;
+      processNext();
+      return;
+    }
+
+    mergeTwo(left, right, function(result) {
+      nextGroups.push(result);
+      i += 2;
+      processNext();
+    });
+  }
+
+  processNext();
+}
+
+function mergeTwo(left, right, callback) {
+
+  let result = [];
+  let l = 0;
+  let r = 0;
+
+  function ask() {
+
+    if (l >= left.length) {
+      result = result.concat(right.slice(r));
+      callback(result);
+      return;
+    }
+
+    if (r >= right.length) {
+      result = result.concat(left.slice(l));
+      callback(result);
+      return;
+    }
+
+    currentPair = [left[l], right[r]];
+
+    document.getElementById("leftSong").textContent =
+      currentPair[0].name;
+
+    document.getElementById("rightSong").textContent =
+      currentPair[1].name;
+
+    document.getElementById("progress").textContent =
+      comparisons + 1;
+
+    window.currentCallback = function(choice) {
+
+      comparisons++;
+
+      if (choice === 0) {
+        result.push(left[l]);
+        l++;
+
+      } else if (choice === 1) {
+        result.push(right[r]);
+        r++;
+
+      } else if (choice === 2) {
+        // 둘 다 좋다
+        // 두 곡을 같은 우선순위로 넣음
+        result.push(left[l]);
+        result.push(right[r]);
+
+        l++;
+        r++;
+
+      } else if (choice === 3) {
+        // 모르겠다
+        // 둘 중 하나를 랜덤으로 선택
+        if (Math.random() < 0.5) {
+          result.push(left[l]);
+          l++;
+        } else {
+          result.push(right[r]);
+          r++;
+        }
+      }
+
+      ask();
+    };
+  }
+
+  ask();
+}
+
+function choose(choice) {
+
+  if (window.currentCallback) {
+    const callback = window.currentCallback;
+    window.currentCallback = null;
+    callback(choice);
+  }
+}
+
+function showResult(result) {
+
+  document.getElementById("sortArea").style.display = "none";
+  document.getElementById("result").style.display = "block";
+
+  const list = document.getElementById("resultList");
+  list.innerHTML = "";
+
+  result.forEach((song, index) => {
+
+    const item = document.createElement("div");
+    item.className = "result-item";
+
+    if (index === 0) {
+      item.classList.add("first");
+    }
+
+    item.innerHTML = `
+      <div class="rank">${index + 1}</div>
+      <div class="song-name">${song.name}</div>
+    `;
+
+    list.appendChild(item);
+  });
+}
 
 </script>
-
 
 </body>
 </html>
