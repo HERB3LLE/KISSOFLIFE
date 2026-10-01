@@ -12,136 +12,104 @@
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
   background: #fff;
   color: #111;
+  font-family: Arial, sans-serif;
   text-align: center;
 }
 
-.container {
-  width: 100%;
-  max-width: 700px;
+#app {
+  width: min(92%, 900px);
   margin: 0 auto;
-  padding: 30px 16px;
+  padding: 35px 0;
 }
 
 h1 {
-  font-size: 28px;
-  margin: 20px 0 10px;
+  font-size: 24px;
+  margin: 0 0 35px;
 }
 
-.subtitle {
-  color: #777;
-  margin-bottom: 35px;
+#counter {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 15px;
 }
 
-#sortArea {
-  display: none;
+#choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
-.progress {
-  margin-bottom: 20px;
-  font-size: 14px;
-  color: #777;
-}
-
-.choices {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  align-items: stretch;
-}
-
-.song {
-  width: 50%;
+.choice {
   min-height: 180px;
   border: 1px solid #ddd;
-  border-radius: 15px;
-  background: white;
+  background: #fff;
+  cursor: pointer;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 20px;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.15s;
-}
-
-.song:hover {
-  background: #f5f5f5;
-  transform: translateY(-2px);
-}
-
-.buttons {
-  display: flex;
-  gap: 10px;
   justify-content: center;
-  margin-top: 15px;
+  padding: 20px;
+  font-size: 18px;
+  transition: .15s;
 }
 
-.buttons button,
-.start button,
-.restart {
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 10px;
-  padding: 12px 18px;
+.choice:hover {
+  background: #f7f7f7;
+}
+
+#buttons {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+#buttons button,
+#restart {
+  border: 0;
+  background: #eee;
+  padding: 9px 16px;
   cursor: pointer;
-  font-size: 14px;
-}
-
-.buttons button:hover,
-.start button:hover,
-.restart:hover {
-  background: #f3f3f3;
-}
-
-.start button {
-  font-size: 17px;
-  padding: 14px 30px;
+  font-size: 13px;
 }
 
 #result {
   display: none;
 }
 
-.result-list {
-  text-align: left;
-  margin-top: 30px;
-}
-
-.result-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 14px 10px;
-  border-bottom: 1px solid #eee;
+#result h2 {
+  margin-bottom: 25px;
 }
 
 .rank {
-  width: 35px;
-  font-weight: bold;
+  display: grid;
+  grid-template-columns: 45px 1fr;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  padding: 12px 5px;
+}
+
+.rank-number {
   color: #888;
 }
 
-.song-name {
-  font-size: 16px;
+.song {
+  font-size: 15px;
 }
 
-.first {
-  font-size: 20px;
-  font-weight: bold;
+#restart {
+  margin-top: 25px;
 }
 
-@media (max-width: 500px) {
-  .song {
-    min-height: 150px;
-    font-size: 17px;
+@media (max-width: 600px) {
+  #app {
+    padding-top: 25px;
   }
 
-  h1 {
-    font-size: 24px;
+  .choice {
+    min-height: 150px;
+    font-size: 16px;
   }
 }
 </style>
@@ -149,44 +117,28 @@ h1 {
 
 <body>
 
-<div class="container">
+<div id="app">
 
-  <!-- 시작 화면 -->
-  <div id="start" class="start">
-    <h1>KISS OF LIFE<br>SONG SORT</h1>
-    <p class="subtitle">좋아하는 곡을 골라주세요</p>
-    <button onclick="startSort()">START</button>
+  <div id="sort">
+    <h1>KISS OF LIFE SONG SORT</h1>
+
+    <div id="counter"></div>
+
+    <div id="choices">
+      <div class="choice" id="left" onclick="selectSong(0)"></div>
+      <div class="choice" id="right" onclick="selectSong(1)"></div>
+    </div>
+
+    <div id="buttons">
+      <button onclick="selectSong(2)">둘 다 좋아</button>
+      <button onclick="selectSong(3)">모르겠다</button>
+    </div>
   </div>
 
-  <!-- 정렬 화면 -->
-  <div id="sortArea">
-
-    <div class="progress">
-      <span id="progress">1</span>번째 비교
-    </div>
-
-    <div class="choices">
-      <div class="song" id="leftSong" onclick="choose(0)"></div>
-      <div class="song" id="rightSong" onclick="choose(1)"></div>
-    </div>
-
-    <div class="buttons">
-      <button onclick="choose(2)">둘 다 좋다</button>
-      <button onclick="choose(3)">모르겠다</button>
-    </div>
-
-  </div>
-
-  <!-- 결과 -->
   <div id="result">
-    <h1>RESULT</h1>
-    <p class="subtitle">KISS OF LIFE SONG RANKING</p>
-
-    <div id="resultList" class="result-list"></div>
-
-    <button class="restart" onclick="location.reload()">
-      다시 하기
-    </button>
+    <h2>RESULT</h2>
+    <div id="ranking"></div>
+    <button id="restart" onclick="location.reload()">다시 하기</button>
   </div>
 
 </div>
@@ -236,209 +188,192 @@ const songs = [
   "Was It You"
 ];
 
-let items = [];
-let currentPair = [];
+let groups;
+let nextGroups;
+let currentLeft;
+let currentRight;
+let result;
 let comparisons = 0;
 
-/*
-  Merge Sort 방식
-  ----------------
-  두 곡을 비교하고,
-  선택된 쪽을 앞에 넣는다.
+function shuffle(array) {
+  array = [...array];
 
-  "둘 다 좋다" → 두 곡을 같은 그룹으로 처리
-  "모르겠다" → 랜덤하게 처리
-*/
-
-function startSort() {
-
-  document.getElementById("start").style.display = "none";
-  document.getElementById("sortArea").style.display = "block";
-
-  items = songs.map((song, index) => ({
-    name: song,
-    index: index
-  }));
-
-  mergeSortStart();
-}
-
-function mergeSortStart() {
-
-  // 정렬용 배열을 복사
-  let shuffled = [...items];
-
-  // 랜덤 셔플
-  for (let i = shuffled.length - 1; i > 0; i--) {
+  for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    [array[i], array[j]] = [array[j], array[i]];
   }
 
-  items = shuffled;
-
-  // 실제 정렬 시작
-  sortGroups([items]);
+  return array;
 }
 
-let groups = [];
-let nextGroups = [];
+function start() {
 
-function sortGroups(initial) {
+  const shuffled = shuffle(songs);
 
-  groups = [];
-
-  // 각 곡을 하나의 그룹으로 만든다
-  for (const song of items) {
-    groups.push([song]);
-  }
-
+  groups = shuffled.map(song => [song]);
   nextGroups = [];
-  mergeRound();
+  comparisons = 0;
+
+  nextRound();
 }
 
-function mergeRound() {
+function nextRound() {
 
-  if (groups.length <= 1) {
+  if (groups.length === 1) {
     showResult(groups[0]);
     return;
   }
 
   nextGroups = [];
-  let i = 0;
+  mergeIndex = 0;
 
-  function processNext() {
-
-    if (i >= groups.length) {
-      groups = nextGroups;
-      mergeRound();
-      return;
-    }
-
-    const left = groups[i];
-    const right = groups[i + 1];
-
-    if (!right) {
-      nextGroups.push(left);
-      i += 2;
-      processNext();
-      return;
-    }
-
-    mergeTwo(left, right, function(result) {
-      nextGroups.push(result);
-      i += 2;
-      processNext();
-    });
-  }
-
-  processNext();
+  mergeNext();
 }
 
-function mergeTwo(left, right, callback) {
+let mergeIndex = 0;
 
-  let result = [];
-  let l = 0;
-  let r = 0;
+function mergeNext() {
 
-  function ask() {
+  if (mergeIndex >= groups.length) {
+    groups = nextGroups;
+    nextRound();
+    return;
+  }
 
-    if (l >= left.length) {
-      result = result.concat(right.slice(r));
-      callback(result);
-      return;
+  const leftGroup = groups[mergeIndex];
+  const rightGroup = groups[mergeIndex + 1];
+
+  mergeIndex += 2;
+
+  if (!rightGroup) {
+    nextGroups.push(leftGroup);
+    mergeNext();
+    return;
+  }
+
+  mergeGroups(leftGroup, rightGroup);
+}
+
+let leftIndex;
+let rightIndex;
+let merged;
+
+function mergeGroups(leftGroup, rightGroup) {
+
+  leftIndex = 0;
+  rightIndex = 0;
+  merged = [];
+
+  ask();
+}
+
+function ask() {
+
+  if (leftIndex >= groupsLeft.length) {
+    merged.push(...groupsRight.slice(rightIndex));
+    nextGroups.push(merged);
+    mergeNext();
+    return;
+  }
+
+  if (rightIndex >= groupsRight.length) {
+    merged.push(...groupsLeft.slice(leftIndex));
+    nextGroups.push(merged);
+    mergeNext();
+    return;
+  }
+
+  currentLeft = groupsLeft[leftIndex];
+  currentRight = groupsRight[rightIndex];
+
+  document.getElementById("left").textContent = currentLeft;
+  document.getElementById("right").textContent = currentRight;
+
+  comparisons++;
+
+  document.getElementById("counter").textContent =
+    comparisons + "번째 비교";
+}
+
+let groupsLeft;
+let groupsRight;
+
+const originalMergeGroups = mergeGroups;
+
+mergeGroups = function(leftGroup, rightGroup) {
+
+  groupsLeft = leftGroup;
+  groupsRight = rightGroup;
+
+  leftIndex = 0;
+  rightIndex = 0;
+  merged = [];
+
+  ask();
+};
+
+function selectSong(choice) {
+
+  if (choice === 0) {
+
+    merged.push(groupsLeft[leftIndex]);
+    leftIndex++;
+
+  } else if (choice === 1) {
+
+    merged.push(groupsRight[rightIndex]);
+    rightIndex++;
+
+  } else if (choice === 2) {
+
+    // 둘 다 좋아
+    // 두 곡을 같은 위치에 넣는다.
+    merged.push(groupsLeft[leftIndex]);
+    merged.push(groupsRight[rightIndex]);
+
+    leftIndex++;
+    rightIndex++;
+
+  } else if (choice === 3) {
+
+    // 모르겠다
+    // 무작위로 하나를 우선 배치한다.
+    if (Math.random() < 0.5) {
+      merged.push(groupsLeft[leftIndex]);
+      leftIndex++;
+    } else {
+      merged.push(groupsRight[rightIndex]);
+      rightIndex++;
     }
-
-    if (r >= right.length) {
-      result = result.concat(left.slice(l));
-      callback(result);
-      return;
-    }
-
-    currentPair = [left[l], right[r]];
-
-    document.getElementById("leftSong").textContent =
-      currentPair[0].name;
-
-    document.getElementById("rightSong").textContent =
-      currentPair[1].name;
-
-    document.getElementById("progress").textContent =
-      comparisons + 1;
-
-    window.currentCallback = function(choice) {
-
-      comparisons++;
-
-      if (choice === 0) {
-        result.push(left[l]);
-        l++;
-
-      } else if (choice === 1) {
-        result.push(right[r]);
-        r++;
-
-      } else if (choice === 2) {
-        // 둘 다 좋다
-        // 두 곡을 같은 우선순위로 넣음
-        result.push(left[l]);
-        result.push(right[r]);
-
-        l++;
-        r++;
-
-      } else if (choice === 3) {
-        // 모르겠다
-        // 둘 중 하나를 랜덤으로 선택
-        if (Math.random() < 0.5) {
-          result.push(left[l]);
-          l++;
-        } else {
-          result.push(right[r]);
-          r++;
-        }
-      }
-
-      ask();
-    };
   }
 
   ask();
 }
 
-function choose(choice) {
+function showResult(ranking) {
 
-  if (window.currentCallback) {
-    const callback = window.currentCallback;
-    window.currentCallback = null;
-    callback(choice);
-  }
-}
-
-function showResult(result) {
-
-  document.getElementById("sortArea").style.display = "none";
+  document.getElementById("sort").style.display = "none";
   document.getElementById("result").style.display = "block";
 
-  const list = document.getElementById("resultList");
-  list.innerHTML = "";
+  const container = document.getElementById("ranking");
 
-  result.forEach((song, index) => {
+  container.innerHTML = "";
 
-    const item = document.createElement("div");
-    item.className = "result-item";
+  ranking.forEach((song, index) => {
 
-    if (index === 0) {
-      item.classList.add("first");
-    }
+    const row = document.createElement("div");
+    row.className = "rank";
 
-    item.innerHTML = `
-      <div class="rank">${index + 1}</div>
-      <div class="song-name">${song.name}</div>
+    row.innerHTML = `
+      <div class="rank-number">${index + 1}</div>
+      <div class="song">${song}</div>
     `;
 
-    list.appendChild(item);
+    container.appendChild(row);
   });
 }
+
+start();
 
 </script>
 
