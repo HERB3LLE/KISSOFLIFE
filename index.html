@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>H2H Song Sort</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: #fff;
+        color: #111;
+        font-family: -apple-system, BlinkMacSystemFont, "Pretendard",
+                     "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    }
+
+    button {
+        font-family: inherit;
+    }
+
+    .wrap {
+        width: 100%;
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 32px 20px 50px;
+    }
+
+    /* 시작 화면 */
+    #startScreen {
+        min-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .title {
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: -1.5px;
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        color: #777;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 35px;
+    }
+
+    .startBtn,
+    .restartBtn {
+        border: 0;
+        background: #111;
+        color: #fff;
+        border-radius: 999px;
+        padding: 15px 32px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    /* 소트 화면 */
+    #sortScreen {
+        display: none;
+    }
+
+    .top {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .sortTitle {
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
+
+    .progressText {
+        color: #888;
+        font-size: 13px;
+    }
+
+    .progressBar {
+        width: 100%;
+        height: 4px;
+        background: #eee;
+        border-radius: 10px;
+        margin-top: 16px;
+        overflow: hidden;
+    }
+
+    .progress {
+        height: 100%;
+        width: 0%;
+        background: #111;
+        transition: width .25s ease;
+    }
+
+    .battle {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .song {
+        min-height: 230px;
+        border: 1px solid #ddd;
+        background: #fff;
+        border-radius: 18px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px 12px;
+        cursor: pointer;
+        transition: transform .15s ease,
+                    background .15s ease,
+                    border-color .15s ease;
+    }
+
+    .song:active {
+        transform: scale(.97);
+    }
+
+    .number {
+        font-size: 12px;
+        color: #aaa;
+        margin-bottom: 15px;
+    }
+
+    .songName {
+        font-size: 18px;
+        font-weight: 750;
+        line-height: 1.4;
+        word-break: keep-all;
+    }
+
+    .choose {
+        margin-top: 18px;
+        font-size: 12px;
+        color: #999;
+    }
+
+    /* 결과 */
+    #resultScreen {
+        display: none;
+    }
+
+    .resultHeader {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .resultTitle {
+        font-size: 28px;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
+
+    .resultSub {
+        font-size: 13px;
+        color: #888;
+    }
+
+    .ranking {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .rankItem {
+        display: flex;
+        align-items: center;
+        min-height: 58px;
+        padding: 12px 15px;
+        border: 1px solid #eee;
+        border-radius: 14px;
+        background: #fff;
+    }
+
+    .rank {
+        width: 38px;
+        flex-shrink: 0;
+        font-weight: 800;
+        font-size: 14px;
+        color: #888;
+    }
+
+    .rankItem:nth-child(1) .rank {
+        color: #111;
+    }
+
+    .rankName {
+        font-size: 15px;
+        font-weight: 650;
+        line-height: 1.35;
+        word-break: keep-all;
+    }
+
+    .restartWrap {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    @media (max-width: 430px) {
+        .wrap {
+            padding: 25px 15px 40px;
+        }
+
+        .title {
+            font-size: 29px;
+        }
+
+        .song {
+            min-height: 205px;
+            border-radius: 16px;
+        }
+
+        .songName {
+            font-size: 16px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+    <!-- 시작 -->
+    <section id="startScreen">
+        <div class="title">H2H SONG SORT</div>
+
+        <div class="subtitle">
+            KISS OF LIFE 노래를<br>
+            두 곡씩 비교해보세요.
+        </div>
+
+        <button class="startBtn" onclick="startSort()">
+            시작하기
+        </button>
+    </section>
+
+
+    <!-- 소트 -->
+    <section id="sortScreen">
+
+        <div class="top">
+            <div class="sortTitle">어떤 노래가 더 좋아?</div>
+
+            <div class="progressText">
+                <span id="currentCount">1</span> / <span id="totalCount">0</span>
+            </div>
+
+            <div class="progressBar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+
+        <div class="battle">
+
+            <button class="song" id="songA" onclick="choose(0)">
+                <div class="number">A</div>
+                <div class="songName" id="nameA"></div>
+                <div class="choose">선택</div>
+            </button>
+
+            <button class="song" id="songB" onclick="choose(1)">
+                <div class="number">B</div>
+                <div class="songName" id="nameB"></div>
+                <div class="choose">선택</div>
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- 결과 -->
+    <section id="resultScreen">
+
+        <div class="resultHeader">
+            <div class="resultTitle">RESULT</div>
+            <div class="resultSub">
+                내가 고른 노래 순위
+            </div>
+        </div>
+
+        <div class="ranking" id="ranking"></div>
+
+        <div class="restartWrap">
+            <button class="restartBtn" onclick="restart()">
+                다시 하기
+            </button>
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+/* =========================
+   노래 목록
+========================= */
+
+const songs = [
+    "쉿 (Shhh)",
+    "안녕, 네버랜드",
+    "sugarcoat",
+    "countdown",
+    "Kitty cat",
+    "Play Love Games",
+    "Bad News",
+    "Nobody Knows",
+    "My 808",
+    "TTG",
+    "Gentleman",
+    "Says it",
+    "Bad News (ENG Ver.)",
+    "Midas Touch",
+    "Nothing",
+    "Sticky",
+    "Te Quiero",
+    "Get Loud",
+    "Chemistry",
+    "Igloo",
+    "Too Many Alex",
+    "Back To Me",
+    "No One But Us",
+    "R.E.M",
+    "Live, Love, Laugh",
+    "W.House",
+    "Lips Hips Kiss",
+    "Tell Me",
+    "k bye",
+    "Painting",
+    "Slide",
+    "Heart of Gold",
+    "Think Twice",
+    "Lucky (Korean Ver.)",
+    "Lucky",
+    "Sticky (Japanese Ver.)",
+    "Midas Touch (Japanese Ver.)",
+    "Shhh (Japanese Ver.)",
+    "Nobody knows (Japanese Ver.)",
+    "Nobody Knows (Remix)",
+    "R.E.M (Remix)",
+    "Who is she",
+    "Don't mind me",
+    "SWEAT",
+    "WHAT!",
+    "BREAK IT",
+    "SWEAT (Japanese Ver.)",
+    "Was It You",
+    "Who is she (Japanese Ver.)",
+    "Igloo (Remix)",
+    "BREAK IT (English Ver.)"
+];
+
+/*
+    실제 비교 순서는
+    Merge Sort 방식으로 만들어서
+    필요한 비교만 진행합니다.
+*/
+
+let list = [];
+let left = [];
+let right = [];
+
+let currentA = null;
+let currentB = null;
+
+let comparisons = 0;
+let totalComparisons = 0;
+
+let merged = [];
+let result = [];
+
+
+/* =========================
+   시작
+========================= */
+
+function startSort() {
+
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("resultScreen").style.display = "none";
+    document.getElementById("sortScreen").style.display = "block";
+
+    resetSort();
+
+    document.getElementById("totalCount").textContent =
+        totalComparisons;
+
+    nextComparison();
+}
+
+
+/* =========================
+   초기화
+========================= */
+
+function resetSort() {
+
+    list = songs.map((name, index) => ({
+        name: name,
+        index: index
+    }));
+
+    comparisons = 0;
+
+    /*
+        Merge sort를 위한
+        초기 그룹 생성
+    */
+
+    let groups = list.map(song => [song]);
+
+    list = groups;
+
+    totalComparisons = estimateComparisons(songs.length);
+
+    prepareMerge();
+
+}
+
+
+/* =========================
+   비교 횟수 예상
+========================= */
+
+function estimateComparisons(n) {
+
+    /*
+        정확한 비교 횟수는 선택 결과에 따라
+        달라질 수 있으므로 진행률 표시용
+        대략적인 값만 사용.
+    */
+
+    return Math.ceil(n * Math.log2(n));
+}
+
+
+/* =========================
+   Merge 준비
+========================= */
+
+function prepareMerge() {
+
+    if (list.length <= 1) {
+
+        result = list[0] || [];
+
+        showResult();
+
+        return;
+    }
+
+    let newGroups = [];
+
+    for (let i = 0; i < list.length; i += 2) {
+
+        if (i + 1 >= list.length) {
+            newGroups.push(list[i]);
+        } else {
+
+            newGroups.push({
+                left: list[i],
+                right: list[i + 1],
+                result: [],
+                li: 0,
+                ri: 0
+            });
+
+        }
+
+    }
+
+    list = newGroups;
+
+    startNextMerge();
+
+}
+
+
+/* =========================
+   다음 Merge
+========================= */
+
+function startNextMerge() {
+
+    merged = [];
+
+    for (let i = 0; i < list.length; i++) {
+
+        let item = list[i];
+
+        if (Array.isArray(item)) {
+
+            merged.push(item);
+
+        } else {
+
+            /*
+                아직 합쳐지지 않은 그룹
+            */
+
+            left = item.left;
+            right = item.right;
+
+            currentMerge = item;
+
+            nextComparison();
+
+            return;
+        }
+    }
+
+    list = merged;
+
+    prepareMerge();
+}
+
+
+/* =========================
+   비교 표시
+========================= */
+
+let currentMerge = null;
+
+function nextComparison() {
+
+    if (!currentMerge) {
+        return;
+    }
+
+    if (
+        currentMerge.li >= currentMerge.left.length
+    ) {
+
+        while (
+            currentMerge.ri <
+            currentMerge.right.length
+        ) {
+            currentMerge.result.push(
+                currentMerge.right[currentMerge.ri++]
+            );
+        }
+
+        finishCurrentMerge();
+
+        return;
+    }
+
+    if (
+        currentMerge.ri >= currentMerge.right.length
+    ) {
+
+        while (
+            currentMerge.li <
+            currentMerge.left.length
+        ) {
+            currentMerge.result.push(
+                currentMerge.left[currentMerge.li++]
+            );
+        }
+
+        finishCurrentMerge();
+
+        return;
+    }
+
+    currentA =
+        currentMerge.left[currentMerge.li];
+
+    currentB =
+        currentMerge.right[currentMerge.ri];
+
+    showSongs();
+}
+
+
+/* =========================
+   곡 표시
+========================= */
+
+function showSongs() {
+
+    document.getElementById("nameA").textContent =
+        currentA.name;
+
+    document.getElementById("nameB").textContent =
+        currentB.name;
+
+    document.getElementById("currentCount").textContent =
+        comparisons + 1;
+
+    let percent =
+        Math.min(
+            (comparisons / totalComparisons) * 100,
+            99
+        );
+
+    document.getElementById("progress").style.width =
+        percent + "%";
+}
+
+
+/* =========================
+   선택
+========================= */
+
+function choose(which) {
+
+    if (!currentMerge) return;
+
+    if (which === 0) {
+
+        currentMerge.result.push(currentA);
+
+        currentMerge.li++;
+
+    } else {
+
+        currentMerge.result.push(currentB);
+
+        currentMerge.ri++;
+
+    }
+
+    comparisons++;
+
+    nextComparison();
+}
+
+
+/* =========================
+   현재 Merge 완료
+========================= */
+
+function finishCurrentMerge() {
+
+    let finished = currentMerge.result;
+
+    let index = list.indexOf(currentMerge);
+
+    if (index !== -1) {
+
+        list[index] = finished;
+
+    }
+
+    currentMerge = null;
+
+    startNextMerge();
+}
+
+
+/* =========================
+   결과
+========================= */
+
+function showResult() {
+
+    document.getElementById("sortScreen").style.display =
+        "none";
+
+    document.getElementById("resultScreen").style.display =
+        "block";
+
+    document.getElementById("progress").style.width =
+        "100%";
+
+    let ranking =
+        document.getElementById("ranking");
+
+    ranking.innerHTML = "";
+
+    result.forEach((song, index) => {
+
+        let item =
+            document.createElement("div");
+
+        item.className = "rankItem";
+
+        item.innerHTML = `
+            <div class="rank">${index + 1}</div>
+            <div class="rankName">${escapeHTML(song.name)}</div>
+        `;
+
+        ranking.appendChild(item);
+
+    });
+
+}
+
+
+/* =========================
+   다시 하기
+========================= */
+
+function restart() {
+
+    document.getElementById("resultScreen").style.display =
+        "none";
+
+    document.getElementById("startScreen").style.display =
+        "flex";
+
+    document.getElementById("sortScreen").style.display =
+        "none";
+
+}
+
+
+/* =========================
+   HTML escape
+========================= */
+
+function escapeHTML(text) {
+
+    return text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+</script>
+
+</body>
+</html>
